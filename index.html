@@ -84,25 +84,40 @@
         min-height: calc(100vh - 88px);
         display: flex;
         align-items: center;
-        background: linear-gradient(110deg, rgba(244, 234, 213, 0.98) 0%, rgba(244, 234, 213, 0.92) 47%, rgba(146, 45, 37, 0.1) 100%);
+        background: #f4ead5;
+      }
+      .hero:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(ellipse at 22% 46%, rgba(224, 92, 46, 0.36), transparent 54%),
+          radial-gradient(ellipse at 52% 96%, rgba(169, 47, 40, 0.22), transparent 48%);
       }
       .hero:after {
         content: "";
         position: absolute;
         inset: 0;
         pointer-events: none;
+        z-index: 0;
         background: linear-gradient(90deg, transparent 65%, rgba(75, 39, 29, 0.08)), radial-gradient(ellipse at 82% 46%, rgba(233, 185, 78, 0.34), transparent 35%);
       }
-      .hero-copy { position: relative; z-index: 1; }
+      .hero-copy { position: relative; z-index: 2; }
       .eyebrow {
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid rgba(146, 45, 37, 0.18);
+        border-radius: 999px;
+        background: rgba(255, 249, 233, 0.76);
         font-weight: 800;
         letter-spacing: 0.05em;
         text-transform: uppercase;
         font-size: 0.8rem;
-        color: var(--red);
+        color: #812a22;
+        box-shadow: 0 4px 16px rgba(75, 39, 29, 0.06);
       }
       .dot {
         width: 10px;
@@ -118,19 +133,25 @@
         letter-spacing: -0.065em;
         max-width: 850px;
         margin: 25px 0;
-        text-shadow: 0 3px 0 rgba(75, 39, 29, 0.08);
+        color: #321815;
+        text-shadow: 0 2px 0 rgba(255, 249, 233, 0.75), 0 8px 24px rgba(75, 39, 29, 0.12);
       }
       .highlight {
-        color: var(--red);
-        -webkit-text-stroke: 1px var(--brown);
+        color: #b84329;
+        -webkit-text-fill-color: #b84329;
+        -webkit-text-stroke: 1px #6a2d22;
         paint-order: stroke fill;
+        text-shadow: 0 3px 0 rgba(255, 249, 233, 0.72), 0 8px 20px rgba(75, 39, 29, 0.18);
       }
       .hero p {
+        padding: 2px 0;
         font-size: 1.1rem;
         line-height: 1.8;
         max-width: 565px;
         margin-bottom: 28px;
-        color: #593a2d;
+        color: #43271f;
+        font-weight: 600;
+        text-shadow: 0 1px 0 rgba(255, 249, 233, 0.72);
       }
       .button {
         display: inline-flex;
@@ -153,6 +174,7 @@
 
       .hero-art {
         position: absolute;
+        z-index: 1;
         right: 4%;
         top: 16%;
         width: 340px;
