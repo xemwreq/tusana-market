@@ -320,9 +320,15 @@
         position: relative;
         overflow: hidden;
       }
-      .card:nth-child(1) .card-art { background: #ffb7c0; }
-      .card:nth-child(2) .card-art { background: #bce4ad; }
-      .card:nth-child(3) .card-art { background: #b4dafa; }
+      .card:nth-child(1) .card-art {
+        background: linear-gradient(145deg, #f7e9c7, #edc86f);
+      }
+      .card:nth-child(2) .card-art {
+        background: linear-gradient(145deg, #f4dfab, #dca844);
+      }
+      .card:nth-child(3) .card-art {
+        background: linear-gradient(145deg, #e8b887, #bd5839);
+      }
       .art-sticker {
         width: 138px;
         height: 138px;
@@ -337,23 +343,24 @@
       }
       .card:nth-child(2) .art-sticker {
         border-radius: 24px;
-        background: #ffd0ae;
+        background: #fff3d9;
         transform: rotate(8deg);
       }
       .card:nth-child(3) .art-sticker {
         border-radius: 42% 58% 61% 39%;
-        background: #d0b7f3;
+        background: #e9b94e;
       }
       .badge {
         position: absolute;
         top: 14px;
         left: 14px;
-        background: white;
+        background: #fff9e9;
         border: 2px solid var(--ink);
         border-radius: 99px;
         padding: 5px 11px;
         font-size: 0.76rem;
         font-weight: 800;
+        color: var(--brown);
       }
       .card-content {
         padding: 20px 22px 22px;
@@ -365,13 +372,15 @@
       .card h3 {
         font: 700 1.7rem 'Kanit';
         margin: 0 0 9px;
+        color: var(--brown);
       }
       .card p { line-height: 1.7; margin: 0 0 20px; }
       .card-foot {
         margin-top: auto;
         padding-top: 17px;
-        border-top: 1px dashed #aaa;
+        border-top: 1px dashed #c9aa7b;
         font-weight: 800;
+        color: var(--red);
       }
       .ticket-details {
         margin-top: 16px;
@@ -433,7 +442,7 @@
       .dialog-content .note { margin-top: 14px !important; }
       .price {
         font: 800 1.6rem 'Kanit';
-        color: #dd4760;
+        color: var(--red);
       }
       .price small {
         font: 600 0.85rem 'Anuphan';
