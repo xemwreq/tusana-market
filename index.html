@@ -537,30 +537,96 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        background: linear-gradient(180deg, #f4ead5, #ead9b8);
-        border-top: 1px solid #c9aa7b;
+        isolation: isolate;
+        background:
+          radial-gradient(ellipse at 50% 68%, rgba(221, 91, 48, 0.28), transparent 58%),
+          linear-gradient(180deg, #f4ead5 0%, #f2dfc1 64%, #ead9b8 100%);
+        border-top: 1px solid rgba(201, 170, 123, 0.75);
+      }
+      .soon::before {
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        background: linear-gradient(90deg, transparent 8%, rgba(169, 47, 40, 0.07) 50%, transparent 92%);
+        content: "";
+      }
+      .soon-content {
+        position: relative;
+        z-index: 1;
+        width: min(100% - 48px, 900px);
+        margin-inline: auto;
       }
       .soon .kicker {
         display: inline-block;
         padding: 7px 14px;
-        background: var(--red);
-        border: 0;
-        border-radius: 2px;
-        color: #fff9e9;
+        background: rgba(169, 47, 40, 0.1);
+        border: 1px solid rgba(169, 47, 40, 0.25);
+        border-radius: 999px;
+        color: #8f3026;
         letter-spacing: 0.14em;
       }
       .soon h2 {
         font: 800 clamp(3.4rem, 11vw, 8rem) / 0.95 'Kanit';
-        margin: 25px 0 14px;
+        margin: 25px 0 18px;
         letter-spacing: -0.06em;
-        color: var(--brown);
+        color: #54271e;
+        text-shadow: 0 5px 0 rgba(84, 39, 30, 0.08);
       }
       .soon h2 span {
-        color: var(--red);
-        -webkit-text-stroke: 1px var(--brown);
-        paint-order: stroke fill;
+        display: inline-block;
+        color: #b7432b;
+        background: linear-gradient(105deg, #a93227 8%, #dc6332 52%, #ad3528 92%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 4px 0 rgba(107, 43, 30, 0.12));
       }
-      .soon p { font-size: 1.05rem; }
+      .soon p {
+        display: inline-block;
+        margin: 0;
+        padding: 9px 16px;
+        border-radius: 999px;
+        background: rgba(255, 249, 233, 0.62);
+        color: var(--brown);
+        font-size: 1.05rem;
+      }
+      .paw-print {
+        position: absolute;
+        z-index: 0;
+        width: 64px;
+        height: 58px;
+        color: rgba(146, 45, 37, 0.2);
+        transform: rotate(-24deg);
+      }
+      .paw-print i {
+        position: absolute;
+        display: block;
+        background: currentColor;
+      }
+      .paw-print i:nth-child(-n+4) {
+        top: 5px;
+        width: 13px;
+        height: 15px;
+        border-radius: 50%;
+      }
+      .paw-print i:nth-child(1) { left: 3px; transform: rotate(-28deg); }
+      .paw-print i:nth-child(2) { left: 18px; top: 0; transform: rotate(-12deg); }
+      .paw-print i:nth-child(3) { left: 34px; top: 0; transform: rotate(12deg); }
+      .paw-print i:nth-child(4) { left: 49px; transform: rotate(28deg); }
+      .paw-print i:nth-child(5) {
+        left: 17px;
+        bottom: 3px;
+        width: 31px;
+        height: 25px;
+        border-radius: 48% 48% 42% 42%;
+      }
+      .paw-one { left: 12%; top: 56%; }
+      .paw-two {
+        right: 12%;
+        top: 20%;
+        color: rgba(169, 73, 39, 0.19);
+        transform: rotate(22deg) scale(0.78);
+      }
       .star {
         position: absolute;
         font-size: 3.5rem;
@@ -679,6 +745,11 @@
         .price-list b { white-space: normal; text-align: right; }
         .about { padding: 42px 0; }
         .soon { padding: 76px 0 88px; }
+        .soon-content { width: min(100% - 40px, 900px); }
+        .soon h2 { font-size: clamp(3.1rem, 15vw, 5.2rem); }
+        .paw-print { opacity: 0.75; transform: rotate(-24deg) scale(0.68); }
+        .paw-one { left: 3%; top: 17%; }
+        .paw-two { right: 3%; top: auto; bottom: 12%; }
         .star.a {
           left: 4%;
           top: 20%;
@@ -868,9 +939,13 @@
       <section class="soon" id="next">
         <span class="star a" aria-hidden="true">✳</span>
         <span class="star b" aria-hidden="true">✦</span>
-        <div class="kicker">พักแป๊บ แล้วเจอกันใหม่</div>
-        <h2>COMING<br><span>SOON</span></h2>
-        <p>เทอม 2 เจอกันอีกนะ ✷</p>
+        <span class="paw-print paw-one" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="paw-print paw-two" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="soon-content">
+          <div class="kicker">พักแป๊บ แล้วเจอกันใหม่</div>
+          <h2>COMING<br><span>SOON</span></h2>
+          <p>เทอม 2 เจอกันอีกนะ ✷</p>
+        </div>
       </section>
     </main>
 
