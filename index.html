@@ -429,6 +429,73 @@
         color: #62615c;
         margin: 10px 0 0 !important;
       }
+      .poll-section {
+        padding-block: 12px 64px;
+      }
+      .poll-panel {
+        padding: clamp(22px, 5vw, 38px);
+        border: 2px solid var(--ink);
+        background: #fbf5e7;
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+      .poll-heading {
+        margin-bottom: 24px;
+        text-align: center;
+      }
+      .poll-heading h2 {
+        margin: 8px 0;
+        color: var(--brown);
+        font: 800 clamp(2rem, 5vw, 3.3rem)/1 'Kanit', sans-serif;
+      }
+      .poll-heading p { margin: 0; }
+      .poll-options { display: grid; gap: 12px; }
+      .poll-option {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px 16px;
+        padding: 14px 16px;
+        border: 1px solid #c9aa7b;
+        background: var(--paper);
+      }
+      .poll-vote {
+        padding: 8px 13px;
+        border: 1px solid var(--brown);
+        background: var(--red);
+        color: var(--paper);
+        font: 700 0.9rem 'Anuphan', sans-serif;
+        cursor: pointer;
+      }
+      .poll-vote:disabled { opacity: 0.65; cursor: wait; }
+      .poll-result {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px 12px;
+        align-items: center;
+      }
+      .poll-result[hidden], #poll-results[hidden] { display: none; }
+      .poll-bar {
+        height: 10px;
+        grid-column: 1 / -1;
+        overflow: hidden;
+        background: #e3d7c4;
+      }
+      .poll-bar span {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: var(--red);
+        transition: width 0.35s ease;
+      }
+      .poll-percent { font: 800 1rem 'Kanit', sans-serif; }
+      .poll-total, .poll-status {
+        margin: 14px 0 0;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .poll-total { font-weight: 800; }
+      .poll-status[data-state="error"] { color: var(--red); }
 
       .about {
         background: var(--yellow);
@@ -558,7 +625,7 @@
         }
         .navlinks a {
           padding: 8px 0;
-          font-size: 0.78rem;
+          font-size: 0.74rem;
         }
         .hero {
           padding-block: 40px 65px;
@@ -579,6 +646,9 @@
           max-width: 34rem;
         }
         .section { padding-block: 68px; }
+        .poll-section { padding-block: 0 52px; }
+        .poll-panel { padding: 20px 16px; }
+        .poll-option { padding: 12px; }
         .cards { grid-template-columns: 1fr; }
         .card:last-child { grid-column: auto; }
         .card { --ticket-seam: 200px; }
@@ -628,6 +698,7 @@
       <a class="brand" href="#top" aria-label="ทัศนะ Market หน้าแรก"><span>ทัศนะ MARKET</span></a>
       <nav class="navlinks" aria-label="เมนูหลัก">
         <a href="#stalls">3 บูธ</a>
+        <a href="#poll">โหวต</a>
         <a href="#about">เกี่ยวกับงาน</a>
         <a href="#next">เทอม 2</a>
       </nav>
@@ -721,6 +792,47 @@
         </div>
       </section>
 
+      <section class="wrap poll-section" id="poll" aria-labelledby="poll-title">
+        <div class="poll-panel">
+          <div class="poll-heading">
+            <div class="kicker">ช่วยเลือกหน่อย</div>
+            <h2 id="poll-title">สนใจบูธไหนมากที่สุด?</h2>
+            <p>เลือกได้ 1 บูธ แล้วดูผลโหวตรวมเป็นเปอร์เซ็นต์</p>
+          </div>
+          <div class="poll-options" id="poll-options">
+            <div class="poll-option" data-poll-option="sketch">
+              <strong>01 · SKETCHBOOTH</strong>
+              <button class="poll-vote" type="button" data-vote="sketch">โหวตบูธนี้</button>
+              <div class="poll-result" hidden>
+                <div class="poll-bar" aria-hidden="true"><span></span></div>
+                <span class="poll-count"></span>
+                <span class="poll-percent"></span>
+              </div>
+            </div>
+            <div class="poll-option" data-poll-option="artifact">
+              <strong>02 · ARTIFACT</strong>
+              <button class="poll-vote" type="button" data-vote="artifact">โหวตบูธนี้</button>
+              <div class="poll-result" hidden>
+                <div class="poll-bar" aria-hidden="true"><span></span></div>
+                <span class="poll-count"></span>
+                <span class="poll-percent"></span>
+              </div>
+            </div>
+            <div class="poll-option" data-poll-option="fanart">
+              <strong>03 · FANART / OTAKU ZONE</strong>
+              <button class="poll-vote" type="button" data-vote="fanart">โหวตบูธนี้</button>
+              <div class="poll-result" hidden>
+                <div class="poll-bar" aria-hidden="true"><span></span></div>
+                <span class="poll-count"></span>
+                <span class="poll-percent"></span>
+              </div>
+            </div>
+          </div>
+          <p class="poll-total" id="poll-total" hidden></p>
+          <p class="poll-status" id="poll-status" role="status" aria-live="polite">กำลังโหลดผลโหวต…</p>
+        </div>
+      </section>
+
       <section class="about" id="about">
         <div class="wrap about-inner">
           <h2>งานของพวกเรา<br>ให้ทุกคนได้มอง<br>ในมุมของตัวเอง</h2>
@@ -793,7 +905,13 @@
       </div>
     </dialog>
     <script>
+      const POLL_API_URL = 'https://script.google.com/macros/s/AKfycbz50upohk42eDcNhNZzkXtSSkhvcVjYWhU_Oay9cI6nOklJG9th_9QY9eNYfpg4GsPg/exec';
+      const POLL_STORAGE_KEY = 'tusana-market-vote-v1';
+      const POLL_BOOTHS = ['sketch', 'artifact', 'fanart'];
       let clickAudioContext;
+      let pollTotals = { sketch: 0, artifact: 0, fanart: 0 };
+      let pollTotal = 0;
+      let hasVoted = false;
 
       function playClickSound() {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -818,6 +936,136 @@
         oscillator.start(now);
         oscillator.stop(now + 0.07);
       }
+
+      function setPollStatus(message, state = 'ready') {
+        const status = document.getElementById('poll-status');
+        status.textContent = message;
+        status.dataset.state = state;
+      }
+
+      function requestPollTotals() {
+        return new Promise((resolve, reject) => {
+          const callback = `tusanaPollCallback${Date.now()}${Math.floor(Math.random() * 1000)}`;
+          const script = document.createElement('script');
+          const timeout = window.setTimeout(() => finish(new Error('Poll request timed out.')), 12000);
+
+          function finish(error, data) {
+            window.clearTimeout(timeout);
+            delete window[callback];
+            script.remove();
+            if (error) reject(error);
+            else resolve(data);
+          }
+
+          window[callback] = (data) => finish(null, data);
+          script.onerror = () => finish(new Error('Could not load poll totals.'));
+          script.src = `${POLL_API_URL}?callback=${encodeURIComponent(callback)}&t=${Date.now()}`;
+          document.head.append(script);
+        });
+      }
+
+      function displayPollResults() {
+        const resultsVisible = hasVoted || pollTotal > 0;
+        document.querySelectorAll('[data-poll-option]').forEach((option) => {
+          const booth = option.dataset.pollOption;
+          const result = option.querySelector('.poll-result');
+          const count = pollTotals[booth] || 0;
+          const percentage = pollTotal === 0 ? 0 : Math.round((count / pollTotal) * 100);
+
+          result.hidden = !resultsVisible;
+          option.querySelector('.poll-count').textContent = `${count} คะแนน`;
+          option.querySelector('.poll-percent').textContent = `${percentage}%`;
+          option.querySelector('.poll-bar span').style.width = `${percentage}%`;
+          option.querySelector('.poll-bar').setAttribute(
+            'aria-label',
+            `${option.querySelector('strong').textContent}: ${percentage}%`
+          );
+          const button = option.querySelector('.poll-vote');
+          button.disabled = hasVoted;
+          if (hasVoted) button.textContent = booth === readSavedVote()?.booth ? 'โหวตแล้ว' : 'โหวตได้ครั้งเดียว';
+        });
+
+        const total = document.getElementById('poll-total');
+        total.hidden = !resultsVisible;
+        total.textContent = `รวม ${pollTotal} คะแนน`;
+      }
+
+      function readSavedVote() {
+        try {
+          const savedVote = localStorage.getItem(POLL_STORAGE_KEY);
+          return savedVote ? JSON.parse(savedVote) : null;
+        } catch (error) {
+          setPollStatus('เบราว์เซอร์นี้ไม่อนุญาตให้บันทึกสถานะการโหวต กรุณาตรวจการตั้งค่าความเป็นส่วนตัวแล้วโหลดหน้าใหม่', 'error');
+          return null;
+        }
+      }
+
+      async function loadPollResults() {
+        if (POLL_API_URL.includes('PASTE_APPS_SCRIPT')) {
+          setPollStatus('โพลยังไม่พร้อมใช้งาน กรุณาลองใหม่ภายหลัง', 'error');
+          document.querySelectorAll('.poll-vote').forEach((button) => { button.disabled = true; });
+          return;
+        }
+
+        try {
+          const data = await requestPollTotals();
+          if (!data?.ok || !data.totals || !POLL_BOOTHS.every((booth) => Number.isFinite(data.totals[booth]))) {
+            throw new Error('The poll returned invalid totals.');
+          }
+          pollTotals = data.totals;
+          pollTotal = data.total;
+          displayPollResults();
+          setPollStatus(hasVoted ? 'ขอบคุณที่ร่วมโหวต!' : 'คะแนนจะอัปเดตเมื่อมีผู้ร่วมโหวต');
+        } catch (error) {
+          setPollStatus('โหลดผลโหวตไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
+          console.error('Unable to load poll results:', error);
+        }
+      }
+
+      function createVoterId() {
+        if (crypto.randomUUID) return crypto.randomUUID();
+        const bytes = crypto.getRandomValues(new Uint8Array(16));
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+        return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+      }
+
+      async function submitVote(booth) {
+        if (!POLL_BOOTHS.includes(booth) || hasVoted) return;
+
+        const buttons = [...document.querySelectorAll('.poll-vote')];
+        buttons.forEach((button) => { button.disabled = true; });
+        setPollStatus('กำลังบันทึกคะแนน…');
+
+        try {
+          const previousVote = readSavedVote();
+          const voterId = previousVote?.voterId || createVoterId();
+          await fetch(POLL_API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: new URLSearchParams({ voterId, booth }),
+          });
+
+          localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify({ voterId, booth }));
+          hasVoted = true;
+          await loadPollResults();
+          setPollStatus('บันทึกโหวตแล้ว · ขอบคุณที่ร่วมโหวต!');
+        } catch (error) {
+          buttons.forEach((button) => { button.disabled = false; });
+          setPollStatus('บันทึกโหวตไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
+          console.error('Unable to submit poll vote:', error);
+        }
+      }
+
+      const savedVote = readSavedVote();
+      hasVoted = Boolean(savedVote?.voterId && POLL_BOOTHS.includes(savedVote.booth));
+      displayPollResults();
+      document.querySelectorAll('[data-vote]').forEach((button) => {
+        button.addEventListener('click', () => { void submitVote(button.dataset.vote); });
+      });
+      void loadPollResults();
 
       document.addEventListener('click', (event) => {
         const trigger = event.target.closest('[data-dialog]');
