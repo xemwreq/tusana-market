@@ -587,6 +587,77 @@
         width: min(100% - 48px, 900px);
         margin-inline: auto;
       }
+      .suggestion-panel {
+        position: relative;
+        z-index: 2;
+        width: min(100% - 48px, 640px);
+        margin: 0 auto 64px;
+        padding: clamp(20px, 4vw, 30px);
+        border: 2px solid rgba(75, 39, 29, 0.78);
+        border-radius: 16px;
+        background: rgba(255, 249, 233, 0.94);
+        box-shadow: 7px 7px 0 rgba(75, 39, 29, 0.16);
+        text-align: left;
+      }
+      .suggestion-panel h3 {
+        margin: 0 0 8px;
+        color: var(--brown);
+        font: 700 clamp(1.35rem, 4vw, 1.8rem)/1.2 'Kanit', sans-serif;
+      }
+      .soon .suggestion-panel > p {
+        display: block;
+        margin: 0 0 16px;
+        padding: 0;
+        background: none;
+        color: #62483a;
+        font-size: 0.95rem;
+      }
+      .suggestion-form {
+        display: grid;
+        justify-items: start;
+        gap: 12px;
+      }
+      .suggestion-form textarea {
+        width: 100%;
+        min-height: 112px;
+        resize: vertical;
+        padding: 13px 14px;
+        border: 1px solid #b99670;
+        border-radius: 9px;
+        background: #fffdf7;
+        color: var(--ink);
+        font: 500 1rem/1.6 'Anuphan', sans-serif;
+      }
+      .suggestion-form textarea:focus-visible {
+        outline: 3px solid rgba(169, 47, 40, 0.32);
+        border-color: var(--red);
+      }
+      .suggestion-form button {
+        padding: 11px 18px;
+        border: 1px solid var(--brown);
+        border-radius: 7px;
+        background: var(--red);
+        color: #fff9e9;
+        font: 700 0.95rem 'Anuphan', sans-serif;
+        cursor: pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+      .suggestion-form button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 3px 4px 0 var(--yellow);
+      }
+      .suggestion-form button:disabled {
+        cursor: wait;
+        opacity: 0.68;
+      }
+      .soon .suggestion-status {
+        min-height: 1.5em;
+        margin: 0;
+        color: var(--brown);
+        font-size: 0.9rem;
+      }
+      .suggestion-status[data-state="error"] { color: #8d261f; }
+      .suggestion-status[data-state="success"] { color: #5a5420; }
       .soon .kicker {
         display: inline-block;
         padding: 7px 14px;
@@ -777,6 +848,7 @@
         .about { padding: 42px 0; }
         .soon { padding: 76px 0 88px; }
         .soon-content { width: min(100% - 40px, 900px); }
+        .suggestion-panel { width: min(100% - 40px, 640px); margin-bottom: 52px; }
         .soon h2 { font-size: clamp(3.1rem, 15vw, 5.2rem); }
         .paw-print { opacity: 0.75; transform: rotate(-24deg) scale(0.68); }
         .paw-one { left: 3%; top: 17%; }
@@ -972,6 +1044,22 @@
         <span class="star b" aria-hidden="true">✦</span>
         <span class="paw-print paw-one" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
         <span class="paw-print paw-two" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <div class="suggestion-panel">
+          <h3 id="suggestion-title">อยากให้ในงานมีอะไรบ้าง?</h3>
+          <p>บอกไอเดียหรือกิจกรรมที่อยากเจอในงานครั้งหน้าได้เลย</p>
+          <form class="suggestion-form" id="suggestion-form">
+            <textarea
+              id="suggestion-message"
+              name="message"
+              maxlength="500"
+              placeholder="เช่น อยากให้มีเวิร์กช็อปวาดรูป หรือเพลงที่เปิดในงาน..."
+              aria-labelledby="suggestion-title"
+              required
+            ></textarea>
+            <button type="submit">ส่งความคิดเห็น <span aria-hidden="true">↗</span></button>
+            <p class="suggestion-status" id="suggestion-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
         <div class="soon-content">
           <div class="kicker">พักแป๊บ แล้วเจอกันใหม่</div>
           <h2>COMING<br><span>SOON</span></h2>
@@ -1080,7 +1168,7 @@
         status.dataset.state = state;
       }
 
-      function requestPollTotals() {
+      function requestJsonp(parameters = {}) {
         return new Promise((resolve, reject) => {
           const callback = `tusanaPollCallback${Date.now()}${Math.floor(Math.random() * 1000)}`;
           const script = document.createElement('script');
@@ -1096,9 +1184,58 @@
 
           window[callback] = (data) => finish(null, data);
           script.onerror = () => finish(new Error('Could not load poll totals.'));
-          script.src = `${POLL_API_URL}?callback=${encodeURIComponent(callback)}&t=${Date.now()}`;
+          const query = new URLSearchParams({ ...parameters, callback, t: Date.now() });
+          script.src = `${POLL_API_URL}?${query}`;
           document.head.append(script);
         });
+      }
+
+      function requestPollTotals() {
+        return requestJsonp();
+      }
+
+      function setSuggestionStatus(message, state = 'ready') {
+        const status = document.getElementById('suggestion-status');
+        status.textContent = message;
+        status.dataset.state = state;
+      }
+
+      async function waitForSuggestion(suggestionId) {
+        for (let attempt = 0; attempt < 15; attempt += 1) {
+          const data = await requestJsonp({ action: 'suggestionStatus', id: suggestionId });
+          if (data?.ok && data.received === true) return;
+          await new Promise((resolve) => window.setTimeout(resolve, 800));
+        }
+        throw new Error('Suggestion was not confirmed by the server.');
+      }
+
+      async function submitSuggestion(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const textarea = form.elements.message;
+        const message = textarea.value.trim();
+        const button = form.querySelector('button[type="submit"]');
+        if (!message || message.length > 500) return;
+
+        button.disabled = true;
+        setSuggestionStatus('กำลังส่งความคิดเห็น…');
+        try {
+          const suggestionId = createVoterId();
+          await fetch(POLL_API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: new URLSearchParams({ action: 'suggestion', suggestionId, message }),
+          });
+          await waitForSuggestion(suggestionId);
+          form.reset();
+          setSuggestionStatus('ส่งความคิดเห็นเรียบร้อยแล้ว ขอบคุณที่ช่วยแชร์ไอเดียนะ!', 'success');
+        } catch (error) {
+          setSuggestionStatus('ส่งไม่สำเร็จ กรุณาลองอีกครั้งในอีกสักครู่', 'error');
+          console.error('Unable to submit event suggestion:', error);
+        } finally {
+          button.disabled = false;
+        }
       }
 
       function displayPollResults() {
@@ -1201,6 +1338,9 @@
       displayPollResults();
       document.querySelectorAll('[data-vote]').forEach((button) => {
         button.addEventListener('click', () => { void submitVote(button.dataset.vote); });
+      });
+      document.getElementById('suggestion-form').addEventListener('submit', (event) => {
+        void submitSuggestion(event);
       });
       void loadPollResults();
 
